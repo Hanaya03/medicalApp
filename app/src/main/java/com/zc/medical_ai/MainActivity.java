@@ -261,15 +261,17 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
     }
 
     private void onButtonClick() {
-        if (Speech.getInstance().isListening()) {
-            Speech.getInstance().stopListening();
-        } else {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-                onRecordAudioPermissionGranted();
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST);
-            }
-        }
+//        if (Speech.getInstance().isListening()) {
+//            Speech.getInstance().stopListening();
+//        } else {
+//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+//                onRecordAudioPermissionGranted();
+//            } else {
+//                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST);
+//            }
+//        }
+        Intent intent = new Intent(MainActivity.this, MainActivity2.class);
+        startActivity(intent);
     }
 
     @Override

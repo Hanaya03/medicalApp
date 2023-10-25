@@ -82,6 +82,8 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
     private FusedLocationProviderClient mFusedLocationClient;
     private Location current_Location;
     OpenWeatherMapHelper weather_helper;
+    private dataStorage storage = dataStorage.getInstance();
+
     String location_address="";
     String weather_string="";
     String to_email="sren@sdsu.edu";
@@ -122,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
         //speak = findViewById(R.id.speak);
         //speak.setOnClickListener(view -> onSpeakClick());
 
-        text = findViewById(R.id.text);
+        //text = findViewById(R.id.text);
         //textToSpeech = findViewById(R.id.textToSpeech);
         progress = findViewById(R.id.progress);
 
@@ -342,6 +344,13 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
     public String getCurrentTimestamp() {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar
                 .getInstance().getTime());
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(storage.getAnswer(0) != null)
+            addTextRow(storage.getAnswer(0));
     }
 
     public void addTextRow(String value) {

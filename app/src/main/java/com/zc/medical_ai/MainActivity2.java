@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.Manifest;
 import androidx.core.app.ActivityCompat;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -26,14 +27,13 @@ import speech.ui.SpeechProgressView;
 import android.widget.Button;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import ch.qos.logback.core.net.SyslogOutputStream;
 
 public class MainActivity2 extends AppCompatActivity implements SpeechDelegate {
-
     private ArrayList<String> questionList = new ArrayList<String>();
+    private dataStorage storage = dataStorage.getInstance();
     private TextView questionText;
     private ImageButton recButton;
     private final int PERMISSIONS_REQUEST = 1;
@@ -42,7 +42,7 @@ public class MainActivity2 extends AppCompatActivity implements SpeechDelegate {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        questionList.add("What is that?");
+        questionList.add("At what time did you go to sleep?");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
@@ -58,9 +58,13 @@ public class MainActivity2 extends AppCompatActivity implements SpeechDelegate {
         questionText.setText(q, 0, q.length);
     }
 
+    private void storeAnswer(String ans){
+        storage.storeAns(ans);
+        Intent intent = new Intent(MainActivity2.this, MainActivity.class);
+        startActivity(intent);
+    }
+
     private void onButtonPress(){
-        String toPass = "button was pressed";
-        askQuestion(toPass.toCharArray());
         if (Speech.getInstance().isListening()) {
             Speech.getInstance().stopListening();
         } else {
@@ -85,7 +89,7 @@ public class MainActivity2 extends AppCompatActivity implements SpeechDelegate {
     }
     public void onSpeechResult(String result) {
 
-        askQuestion(result.toCharArray());
+        storeAnswer(result);
     }
 
     private void onRecordAudioPermissionGranted() {

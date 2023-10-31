@@ -12,19 +12,12 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 import android.content.pm.PackageManager;
-import android.speech.tts.TextToSpeech;
-import android.speech.tts.Voice;
 import speech.GoogleVoiceTypingDisabledException;
 import speech.Logger;
 import speech.Speech;
 import speech.SpeechDelegate;
 import speech.SpeechRecognitionNotAvailable;
 import speech.SpeechUtil;
-import speech.SupportedLanguagesListener;
-import speech.TextToSpeechCallback;
-import speech.UnsupportedReason;
-import speech.ui.SpeechProgressView;
-import android.widget.Button;
 
 
 import java.util.*;
@@ -32,17 +25,18 @@ import java.util.*;
 import ch.qos.logback.core.net.SyslogOutputStream;
 
 public class MainActivity2 extends AppCompatActivity implements SpeechDelegate {
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private ArrayList<String> questionList = new ArrayList<String>();
     private dataStorage storage = dataStorage.getInstance();
+    private questionService questions = questionService.getInstance();
     private TextView questionText;
     private ImageButton recButton;
     private final int PERMISSIONS_REQUEST = 1;
 
+    //boolean ttsDone = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        questionList.add("At what time did you go to sleep?");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
@@ -51,11 +45,11 @@ public class MainActivity2 extends AppCompatActivity implements SpeechDelegate {
         recButton.setOnClickListener(view -> onButtonPress());
 
 
-        askQuestion(questionList.get(0).toCharArray());
+        askQuestion(questions.getQuestion(0));
     }
 
-    private void askQuestion(char[] q){
-        questionText.setText(q, 0, q.length);
+    private void askQuestion(String q){
+        questionText.setText(q);
     }
 
     private void storeAnswer(String ans){
@@ -65,15 +59,24 @@ public class MainActivity2 extends AppCompatActivity implements SpeechDelegate {
     }
 
     private void onButtonPress(){
+        recordAudio();
+    }
+
+    private void recordAudio(){
+        System.out.println("in recordAudio()");
+        //while(ttsDone) {
         if (Speech.getInstance().isListening()) {
+            System.out.println("stopped listening");
             Speech.getInstance().stopListening();
         } else {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                System.out.println("onrecoraudiopermissiongranted()");
                 onRecordAudioPermissionGranted();
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST);
             }
         }
+        //}
     }
 
     public void onStartOfSpeech() {
@@ -93,11 +96,14 @@ public class MainActivity2 extends AppCompatActivity implements SpeechDelegate {
     }
 
     private void onRecordAudioPermissionGranted() {
-        recButton.setVisibility(View.GONE);
-
+        System.out.println("in onRecordAudioPermissionGranted()");
         try {
+            System.out.println("trying stoptexttospeech");
             Speech.getInstance().stopTextToSpeech();
+            System.out.println("success!");
+            System.out.println("trying startlistening");
             Speech.getInstance().startListening(MainActivity2.this);
+            System.out.println("success!");
 
         } catch (SpeechRecognitionNotAvailable exc) {
             showSpeechNotSupportedDialog();

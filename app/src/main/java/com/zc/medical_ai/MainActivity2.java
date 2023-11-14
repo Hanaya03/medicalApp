@@ -28,10 +28,13 @@ public class MainActivity2 extends AppCompatActivity implements SpeechDelegate {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private ArrayList<String> questionList = new ArrayList<String>();
     private dataStorage storage = dataStorage.getInstance();
-    private questionService questions = questionService.getInstance();
+    private questionService questions;
+    //private recordService recorder = recordService.getInstance();
+    private ttsService tts;
     private TextView questionText;
     private ImageButton recButton;
     private final int PERMISSIONS_REQUEST = 1;
+    private int curIndex = 0;
 
     //boolean ttsDone = false;
 
@@ -43,19 +46,32 @@ public class MainActivity2 extends AppCompatActivity implements SpeechDelegate {
         questionText = (TextView)findViewById(R.id.questionView);
         recButton = (ImageButton)findViewById(R.id.recButton);
         recButton.setOnClickListener(view -> onButtonPress());
-
-
-        askQuestion(questions.getQuestion(0));
+        if(this.getApplicationContext() != null) {
+            System.out.println("context is not null");
+            tts = ttsService.getInstance(this.getApplicationContext());
+            questions = questionService.getInstance(this.getApplicationContext());
+        }
+        tts.speakSentence("waiting");
+        tts.speakSentence("waiting");
+        askQuestion(questions.getQuestion(curIndex));
     }
 
     private void askQuestion(String q){
         questionText.setText(q);
+        tts.speakSentence(q);
     }
 
     private void storeAnswer(String ans){
-        storage.storeAns(ans);
-        Intent intent = new Intent(MainActivity2.this, MainActivity.class);
-        startActivity(intent);
+        System.out.println(storage.getAnswer(curIndex));
+        storage.storeAns(curIndex, ans);
+        System.out.println(storage.getAnswer(curIndex));
+        System.out.println(curIndex);
+        curIndex++;
+        if(curIndex == questions.getMapSize()){
+            Intent intent = new Intent(MainActivity2.this, MainActivity.class);
+            startActivity(intent);
+        }
+        askQuestion(questions.getQuestion(curIndex));   
     }
 
     private void onButtonPress(){

@@ -120,6 +120,8 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
         tableLayout.setColumnStretchable(2, true); //third column
         button = findViewById(R.id.button);
         button.setOnClickListener(view -> onButtonClick());
+        button = findViewById(R.id.button2);
+        button.setOnClickListener(view -> onButton2Click());
 
         //speak = findViewById(R.id.speak);
         //speak.setOnClickListener(view -> onSpeakClick());
@@ -276,6 +278,20 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
         startActivity(intent);
     }
 
+    private void onButton2Click() {
+//        if (Speech.getInstance().isListening()) {
+//            Speech.getInstance().stopListening();
+//        } else {
+//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+//                onRecordAudioPermissionGranted();
+//            } else {
+//                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST);
+//            }
+//        }
+        Intent intent = new Intent(MainActivity.this, questionnaireHistory.class);
+        startActivity(intent);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode != PERMISSIONS_REQUEST) {
@@ -349,11 +365,13 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
     protected void onResume() {
         super.onResume();
 
-        if(storage.getAnswer(0) != null)
-            addTextRow(storage.getAnswer(0));
+        if(storage.getAnswer(0) != null) {
+            for (int i = 0; i <= storage.getSize(); i++)
+                addTextRow(i, storage.getAnswer(i));
+        }
     }
 
-    public void addTextRow(String value) {
+    public void addTextRow(int i, String value) {
         TableRow tableRow = new TableRow(this);
         TextView textTime = new TextView(this);
         //textTime.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -384,8 +402,8 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
         textValue.setText(value);
 
         TextView text_keyword = new TextView(this);
-        String main_key_word=KeyWord.getMostSimiliarWord(value);
-        text_keyword.setText(main_key_word);
+        //String questionToShow = questions.getQuestion(i);
+        text_keyword.setText(String.valueOf(i+1));
         tableRow.setLayoutParams(new
                 TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
                 TableRow.LayoutParams.MATCH_PARENT));
@@ -394,10 +412,10 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
         tableRow.addView(text_keyword);
         tableRow.addView(textValue);
         tableLayout.addView(tableRow);
-        Log.v("test_medical",value);
+        //Log.v("test_medical",value);
         String server_email="";
         String server_code="";
-        MailSender.sendToUserMail("Patient Information--Zhicheng Fu","", weather_string,main_key_word,value,server_email, server_code, to_email);
+        //MailSender.sendToUserMail("Patient Information--Zhicheng Fu","", weather_string,main_key_word,value,server_email, server_code, to_email);
         //linearLayout.
     }
 
@@ -413,7 +431,7 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
             Speech.getInstance().say(getString(R.string.repeat));
 
         } else {
-            addTextRow(result);
+            //addTextRow(result);
             Speech.getInstance().say(result + ". information saved!");
         }
     }

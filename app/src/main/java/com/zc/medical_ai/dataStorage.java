@@ -20,12 +20,14 @@ public class dataStorage {
     }
 
     // Other methods and properties of the Singleton class
-    public void storeAns(String ans) {
-        answerMap.put(0, ans);
+    public void storeAns(int i, String ans) {
+        answerMap.put(i, ans);
     }
 
     public String getAnswer(int index){
         return answerMap.get(index);
     }
+
+    public int getSize(){return answerMap.size();}
 }
 

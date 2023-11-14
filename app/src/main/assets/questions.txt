@@ -1,0 +1,11 @@
+At what time did you go to sleep?
+At what time did you go to bed?
+At what time did you try to go to sleep?
+How long did it take you to fall asleep?
+How many times did you wake up, not counting your final awakening?
+In total, how long did these awakenings last?
+At what time was your final awakening?
+Did you wake up earlier than you desired?
+If yes, how many minutes?
+At what time did you get out of bed for the day?
+How would you rate the quality of your sleep?

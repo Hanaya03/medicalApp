@@ -84,9 +84,9 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
     OpenWeatherMapHelper weather_helper;
     private dataStorage storage = dataStorage.getInstance();
 
-    String location_address="";
-    String weather_string="";
-    String to_email="sren@sdsu.edu";
+//    String location_address="";
+//    String weather_string="";
+//    String to_email="sren@sdsu.edu";
     private TextToSpeech.OnInitListener mTttsInitListener = new TextToSpeech.OnInitListener() {
         @Override
         public void onInit(final int status) {
@@ -114,12 +114,14 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
         Speech.init(this, getPackageName(), mTttsInitListener);
         systemLoading=findViewById(R.id.system_loading);
         linearLayout = findViewById(R.id.linearLayout);
-        tableLayout = findViewById(R.id.medical_info_table);
-        tableLayout.setColumnShrinkable(0, true); //first column
-        tableLayout.setColumnStretchable(1, true); //second column
-        tableLayout.setColumnStretchable(2, true); //third column
+//        tableLayout = findViewById(R.id.medical_info_table);
+//        tableLayout.setColumnShrinkable(0, true); //first column
+//        tableLayout.setColumnStretchable(1, true); //second column
+//        tableLayout.setColumnStretchable(2, true); //third column
         button = findViewById(R.id.button);
         button.setOnClickListener(view -> onButtonClick());
+        button = findViewById(R.id.button2);
+        button.setOnClickListener(view -> onButton2Click());
 
         //speak = findViewById(R.id.speak);
         //speak.setOnClickListener(view -> onSpeakClick());
@@ -140,6 +142,10 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
         weather_helper = new OpenWeatherMapHelper(OPEN_WEATHER_MAP_API_KEY);
         weather_helper.setUnits(Units.IMPERIAL);
         getLastLocation();
+
+        for (int i = 0; i < dataStorage.getInstance().getSize();i++){
+            dataStorage.getInstance().storeAns(i, Integer.toString(i));
+        }
     }
 
 //    @Override
@@ -276,6 +282,20 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
         startActivity(intent);
     }
 
+    private void onButton2Click() {
+//        if (Speech.getInstance().isListening()) {
+//            Speech.getInstance().stopListening();
+//        } else {
+//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+//                onRecordAudioPermissionGranted();
+//            } else {
+//                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST);
+//            }
+//        }
+        Intent intent = new Intent(MainActivity.this, questionnaireHistory.class);
+        startActivity(intent);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode != PERMISSIONS_REQUEST) {
@@ -349,57 +369,59 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
     protected void onResume() {
         super.onResume();
 
-        if(storage.getAnswer(0) != null)
-            addTextRow(storage.getAnswer(0));
+        if(storage.getAnswer(0) != null) {
+            //for (int i = 0; i <= storage.getSize(); i++)
+
+        }
     }
 
-    public void addTextRow(String value) {
-        TableRow tableRow = new TableRow(this);
-        TextView textTime = new TextView(this);
-        //textTime.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        textTime.setText(getCurrentTimestamp());
-
-        TextView btnShow = new TextView(this);
-        btnShow.setText("Del  ");
-        //btnShow.setLayoutParams(new LinearLayout.LayoutParams(10, 20));
-
-
-        //btnShow.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        btnShow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ViewGroup parent = (ViewGroup) v.getParent();
-                tableLayout.removeView(parent);
-                //Toast.makeText(MainActivity.this, R.string.welcome_message, Toast.LENGTH_LONG).show();
-            }
-        });
-
-        //TextView textTemp = new TextView(this);
-        //textTemp.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        //textTemp.setText("80");
-
-
-        TextView textValue = new TextView(this);
-        //textValue.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        textValue.setText(value);
-
-        TextView text_keyword = new TextView(this);
-        String main_key_word=KeyWord.getMostSimiliarWord(value);
-        text_keyword.setText(main_key_word);
-        tableRow.setLayoutParams(new
-                TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-                TableRow.LayoutParams.MATCH_PARENT));
-        tableRow.addView(btnShow);
-        tableRow.addView(textTime);
-        tableRow.addView(text_keyword);
-        tableRow.addView(textValue);
-        tableLayout.addView(tableRow);
-        Log.v("test_medical",value);
-        String server_email="";
-        String server_code="";
-        MailSender.sendToUserMail("Patient Information--Zhicheng Fu","", weather_string,main_key_word,value,server_email, server_code, to_email);
-        //linearLayout.
-    }
+//    public void addTextRow(String value) {
+//        TableRow tableRow = new TableRow(this);
+//        TextView textTime = new TextView(this);
+//        //textTime.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+//        textTime.setText(getCurrentTimestamp());
+//
+//        TextView btnShow = new TextView(this);
+////        btnShow.setText("Del  ");
+//        //btnShow.setLayoutParams(new LinearLayout.LayoutParams(10, 20));
+//
+//
+//        //btnShow.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+//        btnShow.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ViewGroup parent = (ViewGroup) v.getParent();
+//                tableLayout.removeView(parent);
+//                //Toast.makeText(MainActivity.this, R.string.welcome_message, Toast.LENGTH_LONG).show();
+//            }
+//        });
+//
+//        //TextView textTemp = new TextView(this);
+//        //textTemp.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+//        //textTemp.setText("80");
+//
+//
+//        TextView textValue = new TextView(this);
+//        //textValue.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+//        textValue.setText(value);
+//
+//        TextView text_keyword = new TextView(this);
+//        String main_key_word=KeyWord.getMostSimiliarWord(value);
+//        text_keyword.setText(main_key_word);
+//        tableRow.setLayoutParams(new
+//                TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
+//                TableRow.LayoutParams.MATCH_PARENT));
+//        tableRow.addView(btnShow);
+//        tableRow.addView(textTime);
+//        tableRow.addView(text_keyword);
+//        tableRow.addView(textValue);
+//        tableLayout.addView(tableRow);
+//        Log.v("test_medical",value);
+////        String server_email="";
+////        String server_code="";
+////        MailSender.sendToUserMail("Patient Information--Zhicheng Fu","", weather_string,main_key_word,value,server_email, server_code, to_email);
+//        //linearLayout.
+//    }
 
     @Override
     public void onSpeechResult(String result) {
@@ -413,7 +435,7 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
             Speech.getInstance().say(getString(R.string.repeat));
 
         } else {
-            addTextRow(result);
+//            addTextRow(result);
             Speech.getInstance().say(result + ". information saved!");
         }
     }
@@ -492,7 +514,7 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
 //                            +"City, Country: " + currentWeather.getName() + ", " + currentWeather.getSys().getCountry()
 //                    );
                                     systemLoading.setVisibility(View.GONE);
-                                    weather_string=currentWeather.getWeather().get(0).getDescription()+", Temperature: "+currentWeather.getMain().getTempMax()+" Humidity: "+currentWeather.getMain().getHumidity()+" City: "+currentWeather.getName()+" Country: "+currentWeather.getSys().getCountry();
+//                                    weather_string=currentWeather.getWeather().get(0).getDescription()+", Temperature: "+currentWeather.getMain().getTempMax()+" Humidity: "+currentWeather.getMain().getHumidity()+" City: "+currentWeather.getName()+" Country: "+currentWeather.getSys().getCountry();
                                 }
 
                                 @Override
@@ -559,7 +581,7 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
 //                            +"City, Country: " + currentWeather.getName() + ", " + currentWeather.getSys().getCountry()
 //                    );
                     systemLoading.setVisibility(View.GONE);
-                    weather_string=currentWeather.getWeather().get(0).getDescription()+", Temperature: "+currentWeather.getMain().getTempMax()+",  Humidity: "+currentWeather.getMain().getHumidity()+", City: "+currentWeather.getName()+" Country: "+currentWeather.getSys().getCountry();
+//                    weather_string=currentWeather.getWeather().get(0).getDescription()+", Temperature: "+currentWeather.getMain().getTempMax()+",  Humidity: "+currentWeather.getMain().getHumidity()+", City: "+currentWeather.getName()+" Country: "+currentWeather.getSys().getCountry();
                 }
 
                 @Override
